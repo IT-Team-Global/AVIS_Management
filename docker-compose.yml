@@ -56,6 +56,8 @@ services:
     hostname: worker-api.weave.local
     dns: 172.17.0.1
     dns_search: weave.local
+    ports:
+      - "8001:8001"
     environment:
       - TZ=${TIMEZONE}
       - MARIADB_PASS=${MYSQL_ROOT_PASSWORD}
