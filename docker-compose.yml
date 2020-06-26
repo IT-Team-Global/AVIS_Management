@@ -58,6 +58,7 @@ services:
     dns_search: weave.local
     ports:
       - "8001:8001"
+      - "8003:8003"
     environment:
       - TZ=${TIMEZONE}
       - MARIADB_PASS=${MYSQL_ROOT_PASSWORD}
