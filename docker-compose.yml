@@ -76,7 +76,7 @@ services:
       - ./data/worker_api:/opt/data
 
   certificate-authority:
-    image: harbor.ittim-online.com/avis/certificate_authority:latest
+    image: harbor.ittim-online.com/avis_release/certificate_authority:latest
     restart: always
     hostname: certificate-authority.weave.local
     dns: 172.17.0.1
