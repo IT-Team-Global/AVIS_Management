@@ -129,6 +129,15 @@ services:
     restart: always
     volumes:
       - ./data/influxdb/:/root/.influxdbv2
+      
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    hostname: phpmyadmin.weave.local
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - PMA_HOST=mariadb.weave.local
 
 networks:
   default:
