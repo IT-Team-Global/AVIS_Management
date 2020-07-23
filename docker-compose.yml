@@ -138,6 +138,7 @@ services:
     restart: always
     environment:
       - PMA_HOST=mariadb.weave.local
+      - PMA_ABSOLUTE_URI=/phpmyadmin
 
 networks:
   default:
