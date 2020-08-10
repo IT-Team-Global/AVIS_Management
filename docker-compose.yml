@@ -51,6 +51,7 @@ services:
       - INFLUX_ORG=${INFLUX_ORG}
       - INFLUX_BUCKET=${INFLUX_BUCKET}
       - INFLUX_SERVER=http://influxdb.weave.local:9999
+      - DOMAIN=${DOMAIN}
  
   worker-api:
     image: harbor.ittim-online.com/avis_release/worker_api:latest
