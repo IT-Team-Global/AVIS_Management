@@ -75,7 +75,6 @@ services:
       - INFLUX_ORG=${INFLUX_ORG}
       - INFLUX_BUCKET=${INFLUX_BUCKET}
       - INFLUX_SERVER=http://influxdb.weave.local:9999
-      - DOMAIN=${DOMAIN}
     volumes:
       - ./data/worker_api:/opt/data
       - ./data/license:/opt/license
