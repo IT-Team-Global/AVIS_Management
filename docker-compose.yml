@@ -10,9 +10,11 @@ services:
       - EMAIL=${EMAIL}
       - DOMAIN=${DOMAIN}
       - INFLUX_DOMAIN=${INFLUX_DOMAIN}
+      - CLIENT_HTTP_PORT=${CLIENT_HTTP_PORT}
     ports:
       - "80:80"
       - "443:443"
+      - "${CLIENT_HTTP_PORT}:${CLIENT_HTTP_PORT}"
     volumes:
       - ./data/web:/opt/data
 
@@ -52,6 +54,7 @@ services:
       - INFLUX_BUCKET=${INFLUX_BUCKET}
       - INFLUX_SERVER=http://influxdb.weave.local:9999
       - DOMAIN=${DOMAIN}
+      - CLIENT_HTTP_PORT=${CLIENT_HTTP_PORT}
  
   worker-api:
     image: harbor.ittim-online.com/avis_release/worker_api:latest
