@@ -17,6 +17,15 @@ services:
       - "${CLIENT_HTTP_PORT}:${CLIENT_HTTP_PORT}"
     volumes:
       - ./data/web:/opt/data
+      
+  reseller-web:
+    image: harbor.ittim-online.com/avis_release/reseller_web_server:latest
+    restart: always
+    hostname: reseller-web.weave.local
+    dns: 172.17.0.1
+    dns_search: weave.local
+    environment:
+      - RESELLER_DOMAIN=${RESELLER_DOMAIN}      
 
   database:
     image: mariadb
@@ -101,6 +110,25 @@ services:
       - POSTAL_CODE=${POSTAL_CODE}    
     volumes:
       - ./data/CA:/opt/data
+
+  reseller-api:
+    image: harbor.ittim-online.com/avis_release/reseller_api:latest
+    restart: always
+    hostname: reseller-api.weave.local
+    dns: 172.17.0.1
+    dns_search: weave.local
+    volumes:
+      - ./data/license:/opt/license
+    environment:
+      - TZ=${TIMEZONE}
+      - MARIADB_PASS=${MYSQL_ROOT_PASSWORD}
+      - MARIADB_USER=root
+      - MARIADB_IP=mariadb.weave.local
+      - JWT_KEY_RESELLER=${JWT_KEY_RESELLER}
+      - REDIS_IP=redis.weave.local
+      - REDIS_PORT=6379
+      - DOMAIN=${DOMAIN}
+      - CLIENT_HTTP_PORT=${CLIENT_HTTP_PORT}
 
   Minio:
     image: minio/minio:latest
