@@ -11,6 +11,7 @@ services:
       - DOMAIN=${DOMAIN}
       - INFLUX_DOMAIN=${INFLUX_DOMAIN}
       - CLIENT_HTTP_PORT=${CLIENT_HTTP_PORT}
+      - RESELLER_DOMAIN=${RESELLER_DOMAIN} 
     ports:
       - "80:80"
       - "443:443"
