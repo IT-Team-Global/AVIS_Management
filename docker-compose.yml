@@ -65,6 +65,7 @@ services:
       - INFLUX_SERVER=http://influxdb.weave.local:9999
       - DOMAIN=${DOMAIN}
       - CLIENT_HTTP_PORT=${CLIENT_HTTP_PORT}
+      - TMDB_KEY=${TMDB_KEY}
  
   worker-api:
     image: harbor.ittim-online.com/avis_release/worker_api:latest
