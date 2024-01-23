@@ -22,7 +22,7 @@ services:
     environment:
       - RESELLER_DOMAIN=${RESELLER_DOMAIN}      
 
-  database:
+  mariadb:
     image: mariadb
     restart: always
     environment:
