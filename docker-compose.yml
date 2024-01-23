@@ -3,9 +3,6 @@ services:
   web-server:
     image: harbor.ittim-online.com/avis_release/web_server:latest
     restart: always
-    hostname: web-server.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     environment:
       - EMAIL=${EMAIL}
       - DOMAIN=${DOMAIN}
@@ -22,18 +19,12 @@ services:
   reseller-web:
     image: harbor.ittim-online.com/avis_release/reseller_web_server:latest
     restart: always
-    hostname: reseller-web.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     environment:
       - RESELLER_DOMAIN=${RESELLER_DOMAIN}      
 
   database:
     image: mariadb
     restart: always
-    hostname: mariadb.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=avis
@@ -43,26 +34,23 @@ services:
   management-api:
     image: harbor.ittim-online.com/avis_release/management_api:latest
     restart: always
-    hostname: management-api.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     volumes:
       - ./data/license:/opt/license
     environment:
       - TZ=${TIMEZONE}
       - MARIADB_PASS=${MYSQL_ROOT_PASSWORD}
       - MARIADB_USER=root
-      - MARIADB_IP=mariadb.weave.local
+      - MARIADB_IP=mariadb
       - JWT_KEY=${JWT_KEY}
-      - MINIO_IP=minio.weave.local
+      - MINIO_IP=minio
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
-      - REDIS_IP=redis.weave.local
+      - REDIS_IP=redis
       - REDIS_PORT=6379
       - INFLUX_TOKEN=${INFLUX_TOKEN}
       - INFLUX_ORG=${INFLUX_ORG}
       - INFLUX_BUCKET=${INFLUX_BUCKET}
-      - INFLUX_SERVER=http://influxdb.weave.local:9999
+      - INFLUX_SERVER=http://influxdb2:8086
       - DOMAIN=${DOMAIN}
       - CLIENT_HTTP_PORT=${CLIENT_HTTP_PORT}
       - TMDB_KEY=${TMDB_KEY}
@@ -70,9 +58,6 @@ services:
   worker-api:
     image: harbor.ittim-online.com/avis_release/worker_api:latest
     restart: always
-    hostname: worker-api.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     ports:
       - "8001:8001"
       - "8003:8003"
@@ -80,15 +65,15 @@ services:
       - TZ=${TIMEZONE}
       - MARIADB_PASS=${MYSQL_ROOT_PASSWORD}
       - MARIADB_USER=root
-      - MARIADB_IP=mariadb.weave.local
-      - REDIS_IP=redis.weave.local
+      - MARIADB_IP=mariadb
+      - REDIS_IP=redis
       - REDIS_PORT=6379
       - DOMAIN=${DOMAIN}
       - SERVER_IP=${SERVER_IP}
       - INFLUX_TOKEN=${INFLUX_TOKEN}
       - INFLUX_ORG=${INFLUX_ORG}
       - INFLUX_BUCKET=${INFLUX_BUCKET}
-      - INFLUX_SERVER=http://influxdb.weave.local:9999
+      - INFLUX_SERVER=http://influxdb2:8086
     volumes:
       - ./data/worker_api:/opt/data
       - ./data/license:/opt/license
@@ -96,14 +81,11 @@ services:
   certificate-authority:
     image: harbor.ittim-online.com/avis_release/certificate_authority:latest
     restart: always
-    hostname: certificate-authority.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     environment:
       - TZ=${TIMEZONE}
       - MARIADB_PASS=${MYSQL_ROOT_PASSWORD}
       - MARIADB_USER=root
-      - MARIADB_IP=mariadb.weave.local
+      - MARIADB_IP=mariadb
       - ORGANIZATION=${ORGANIZATION}
       - COUNTRY_CODE=${COUNTRY_CODE}
       - PROVINCE=${PROVINCE}
@@ -116,18 +98,15 @@ services:
   reseller-api:
     image: harbor.ittim-online.com/avis_release/reseller_api:latest
     restart: always
-    hostname: reseller-api.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     volumes:
       - ./data/license:/opt/license
     environment:
       - TZ=${TIMEZONE}
       - MARIADB_PASS=${MYSQL_ROOT_PASSWORD}
       - MARIADB_USER=root
-      - MARIADB_IP=mariadb.weave.local
+      - MARIADB_IP=mariadb
       - JWT_KEY_RESELLER=${JWT_KEY_RESELLER}
-      - REDIS_IP=redis.weave.local
+      - REDIS_IP=redis
       - REDIS_PORT=6379
       - DOMAIN=${DOMAIN}
       - CLIENT_HTTP_PORT=${CLIENT_HTTP_PORT}
@@ -135,9 +114,6 @@ services:
   Minio:
     image: minio/minio:latest
     restart: always
-    hostname: minio.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     command: server /data
     environment:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
@@ -147,34 +123,28 @@ services:
 
   redis:
     image: redis
-    hostname: redis.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     command: redis-server --appendonly yes
     restart: always
     volumes:
       - ./data/redis/:/data/
 
-  influxdb:
-    image: quay.io/influxdb/influxdb:2.0.0-beta
-    hostname: influxdb.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
+  influxdb2:
+    image: influxdb:2.7
     restart: always
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: 'setup'
+      DOCKER_INFLUXDB_INIT_USERNAME: 'admin'
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${DOCKER_INFLUXDB_INIT_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: 'avis'
+      DOCKER_INFLUXDB_INIT_BUCKET: 'init'
+    ports:
+      - "8086:8086"
     volumes:
-      - ./data/influxdb/:/root/.influxdbv2
+      - ./data/influxdb2/:/var/lib/influxdb2
       
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    hostname: phpmyadmin.weave.local
-    dns: 172.17.0.1
-    dns_search: weave.local
     restart: always
     environment:
-      - PMA_HOST=mariadb.weave.local
+      - PMA_HOST=mariadb
       - PMA_ABSOLUTE_URI=/phpmyadmin
-
-networks:
-  default:
-    external:
-      name: weave
